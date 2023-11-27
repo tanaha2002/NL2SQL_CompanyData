@@ -1,0 +1,8 @@
+venv/
+.aider*
+ref_llmma_chatbot
+.env
+tokenizer.zip
+server_key
+.streamlit
+*.onnx

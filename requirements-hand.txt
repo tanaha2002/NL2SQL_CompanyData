@@ -1,0 +1,8 @@
+python-dotenv
+psycopg2-binary
+streamlit
+openai
+pyautogen
+transformers
+onnxruntime
+pyvi

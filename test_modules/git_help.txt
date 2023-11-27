@@ -1,0 +1,15 @@
+git commit -m "commit"
+để lưu 1 phiên bản hiện tại
+
+
+Sau khi sửa code nếu muốn coi lại bản đã commit thì dùng
+git log
+
+sau đó lấy mã hash cần xem
+git checkout <hash code>
+
+Xem xong quay lại main bằng cách
+git checkout master
+
+Hoặc tạo 1 nhánh mới từ phiên bản cũ
+git checkout -b new_branch_name <hash code>

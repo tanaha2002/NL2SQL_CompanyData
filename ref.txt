@@ -1,0 +1,2 @@
+
+https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting/blob/main/DIN-SQL_BIRD.py
