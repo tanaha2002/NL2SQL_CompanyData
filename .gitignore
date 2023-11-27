@@ -6,3 +6,5 @@ tokenizer.zip
 server_key
 .streamlit
 *.onnx
+llmma2-13b-SQL
+test_modules

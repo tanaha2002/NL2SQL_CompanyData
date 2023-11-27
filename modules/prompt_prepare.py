@@ -192,13 +192,14 @@ class PromptHandle:
         print(f'{template_de}')
         print(f"------------------END GET ANSWER------------------")
         sql_ = ""
+        description = ""
         try:
             full_repsonse = self.chat_with_openai(template_de, st)
             #split sql
             sql_query = self.extract_sql_query(full_repsonse)
             sql_ = sql_query
             
-            result = self.run_sql_query(sql_)
+            result,description = self.run_sql_query(sql_)
             print(f"---------------result in get answer-----------------")
             print(result)
             print(f"---------------end result in get answer-----------------")
@@ -207,8 +208,7 @@ class PromptHandle:
             print(f"---------------result in exception get answer-----------------")
             print(result)
             print(f"---------------end result in exception get answer-----------------")
-            
-        return sql_query,result
+        return sql_query,result,description
     
 
     def Groupchat(self,query,st):
@@ -220,7 +220,7 @@ class PromptHandle:
         sample_prompt += f"---------END EXAMPLE---------\n"
         query = f"{query}\n{sample_prompt}"
         report_da = self.da_report(query,st)
-        sql,result = self.get_answer(report_da,st)
+        sql,result,description = self.get_answer(report_da,st)
         max_try = 3
         print(f"\n\n------------------RESULT------------------\n{result}\n------------------END RESULT------------------\n")
         while 'Failed' in result and max_try > 0:
@@ -239,10 +239,10 @@ class PromptHandle:
             \n---------END USER QUESTION---------\n
             \n\n
             """
-            sql,result = self.get_answer(new_prompt,st)
+            sql,result,description = self.get_answer(new_prompt,st)
             max_try -= 1
         #get column name of curr
-        return sql,result
+        return sql,result,description
     
 
 
@@ -285,7 +285,7 @@ class PromptHandle:
         prompt_response = self.chat_with_openai(prompt,st)
         sql_query = self.extract_sql_query(prompt_response)
        
-        result = self.run_sql_query(sql_query)
+        result,description = self.run_sql_query(sql_query)
        
 
         return result

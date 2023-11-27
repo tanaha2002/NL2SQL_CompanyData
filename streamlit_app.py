@@ -76,16 +76,23 @@ if st.session_state.messages[-1]["role"] != "assistant":
             #caculate cosine similarity of prompt with raw cache
                 
             # response = prompt_handle.process_query(prompt, table_defines,st)
-            sql,response = prompt_handle.Groupchat(prompt,st)
+            sql,response,description = prompt_handle.Groupchat(prompt,st)
             st.write(sql)
+            #add description (column name)  to response
+            print(description)
+            columns = [col[0] for col in description]
+            print(response)
+            merge_response = []
+            for row in response:
+                merge_response.append(dict(zip(columns, row)))
             st.write("Results:")
-            st.table(response)
-            df = pd.DataFrame(response)
+            st.table(merge_response)
+            df = pd.DataFrame(merge_response)
             table_html = df.to_html(index=False, justify='center', classes=['dataframe'])
             
             # for idx, row in enumerate(response):
             #     st.write(f"{idx} - Name: {row[0]}, Value: {row[1]}")
             message = {"role": "assistant", "content":sql}
-            message2 = {"role": "assistant", "result":response}
+            message2 = {"role": "assistant", "result":merge_response}
             st.session_state.messages.append(message)
             st.session_state.messages.append(message2)

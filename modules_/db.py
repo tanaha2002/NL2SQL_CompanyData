@@ -48,7 +48,8 @@ class PostgresDB:
         with self.conn.cursor() as cur:
             cur.execute(sql)
             self.conn.commit()
-            return cur.fetchall()
+            
+            return cur.fetchall(),cur.description
         
 
     def get_table_definitions(self, table_name):
@@ -188,7 +189,7 @@ class PostgresDB:
     def get_top_n_rows(self, table_name, n=5):
         # Fetch column names
         query_columns = f"SELECT column_name FROM information_schema.columns WHERE table_name = '{table_name}';"
-        columns_result = self.run_sql(query_columns)
+        columns_result,description = self.run_sql(query_columns)
         #filter column with only column in table_details
         table_details = self.get_column_names()
         column_names = [row[0] for row in columns_result if row[0] in table_details[table_name].keys()]
@@ -198,7 +199,7 @@ class PostgresDB:
         
         # query_data = f"SELECT * FROM {table_name} LIMIT {n};"
         query_data = f"SELECT {','.join(column_names)} FROM {table_name} LIMIT {n};"
-        data_result = self.run_sql(query_data)
+        data_result,description = self.run_sql(query_data)
 
         # Format header with adjusted spaces
         max_lengths = [len(name) for name in column_names]
