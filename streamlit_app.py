@@ -4,19 +4,28 @@ import time
 from PIL import Image
 import streamlit as st
 from modules import prompt_prepare, llm, db, cache_processing, sentence_embbeding
-
-
+import json
+import pandas as pd
 
 openai.api_key = st.secrets['api_secret']
 # App title
-st.set_page_config(page_title="🤯🐼 Odoo CRM Chatbot")
+st.set_page_config(page_title="🤯🐼 Database @$J#L!%H:")
 
 image = Image.open("ai.png")
-st.sidebar.image(image,width=280,)
+
+
 with st.sidebar:
     st.title('⚡⛈️  Odoo CRM ⚡⛈️  \n')
+    st.subheader('Đôi lời bộc bạch')
+    st.markdown('<justify>🤦‍♂️Bot hiện đang trong giai đoạn thử nghiệm, mọi câu trả lời có thể sẽ không được tốt, sẽ cố gắng cải thiện trong tương lai. Mong bạn thông cảm... 🫂</justify>', unsafe_allow_html=True)
+    st.subheader('Trạng thái')
+    st.success('Đã có API key', icon='✅')
+    st.subheader('Mô hình')
+    #dropdown
+    selected_model = st.sidebar.selectbox('Chọn mô hình', ['gpt-3.5-turbo-0613'], key='selected_model')
+    st.sidebar.image(image, width=220)
+    
 
-    # st.markdown('📖 Learn how to build this app in this [blog](https://blog.streamlit.io/how-to-build-a-llama-2-chatbot/)!')
 
 
 
@@ -32,7 +41,10 @@ if "messages" not in st.session_state.keys():
 # Display or clear chat messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
-        st.write(message["content"])
+        if "content" in message:
+            st.write(message["content"])
+        if "result" in message:
+            st.table(message["result"])
 def clear_chat_history():
     st.session_state.messages = [{"role": "assistant", "content": "Sup!!!, cần tìm thông tin gì trong cơ sở dữ liệu hả?"}]
 st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
@@ -66,8 +78,14 @@ if st.session_state.messages[-1]["role"] != "assistant":
             # response = prompt_handle.process_query(prompt, table_defines,st)
             sql,response = prompt_handle.Groupchat(prompt,st)
             st.write(sql)
-            st.write(response)
+            st.write("Results:")
+            st.table(response)
+            df = pd.DataFrame(response)
+            table_html = df.to_html(index=False, justify='center', classes=['dataframe'])
+            
+            # for idx, row in enumerate(response):
+            #     st.write(f"{idx} - Name: {row[0]}, Value: {row[1]}")
             message = {"role": "assistant", "content":sql}
-            message2 = {"role": "assistant", "content":response}
+            message2 = {"role": "assistant", "result":response}
             st.session_state.messages.append(message)
             st.session_state.messages.append(message2)

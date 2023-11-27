@@ -242,7 +242,6 @@ class PromptHandle:
             sql,result = self.get_answer(new_prompt,st)
             max_try -= 1
         #get column name of curr
-     
         return sql,result
     
 
