@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 import streamlit as st
 import requests
 RAW_CACHE = 'text2SQL.db'
-
+import requests
 
 class CacheHandle:
     def __init__(self) -> None:
@@ -29,13 +29,35 @@ class CacheHandle:
             'database': st.secrets['CACHE_DB']
 
         }
+        #--------local test-----------------
         #check if file embeddings.onnx is there
-        if not os.path.exists("./modules/embeddings.onnx"):
-            print("embeddings.onnx not found, downloading....")
+        # if not os.path.exists("./modules/embeddings.onnx"):
+        #     print("embeddings.onnx not found, downloading....")
 
-
-        self.sentence_embedding = SentenceEmbedding("./tokenizer",
-                                                     "./modules/embeddings.onnx")
+        # else:
+        #     self.sentence_embedding = SentenceEmbedding("./tokenizer",
+        #                                              "./modules/embeddings.onnx")
+        #check the request to get embeddings.onnx
+        #--------- using api ---------------
+        self.url_onnx = st.secrets['url_onnx']
+        self.response = None
+        try:
+            if requests.get(self.url_onnx).status_code == 200:
+                print("embeddings.onnx is ready to use!")
+                self.response = requests.post(url=self.url_onnx + 'init/').status_code
+                if self.response == 200:
+                    print("Init sentence embedding success!")
+                    
+                else:
+                    print("Init sentence embedding failed!")
+            else:
+                self.response
+                print("embeddings.onnx not found, may API error!")
+        except Exception as e:
+            print(f"ERROR: {e}")
+        
+            
+        
         self.connection = None
         self.cursor = None
 
@@ -122,7 +144,14 @@ class CacheHandle:
         return True
     
     def text_embedding(self, text):
-        return self.sentence_embedding.embed(text)
+        if self.response.status_code == 200:
+            embedding = requests.post(url=self.url_onnx + 'result', params={'text': text})['embedding']
+            embedding_ = np.array(embedding)
+        # return self.sentence_embedding.embed(text)
+            return embedding_
+        else:
+            print("Ur init current failed, please check again!")
+            return False
     def search_question(self, question):
         sql = f"SELECT * FROM public.cache_vector WHERE origin_question = %s;"
         self.cursor.execute(sql, (question,))

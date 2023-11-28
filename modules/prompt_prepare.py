@@ -30,11 +30,17 @@ class PromptHandle:
         self.connect_to_db()
         ## ----------- INIT CACHE ---------------##
         self.cache_process = CacheHandle()
-        self.cache_process.connect_db()
+        self.status = self.cache_process.response
+        if self.status ==200:
+            self.cache_process.connect_db()
+            
+            #raw cache
+            self.raw_cache = self.cache_process.get_raw_cache()
+            self.raw_cache_dict = self.cache_qa_format()
+        else:
+            print('Failed Init')
+            print(self.status)
         
-        #raw cache
-        self.raw_cache = self.cache_process.get_raw_cache()
-        self.raw_cache_dict = self.cache_qa_format()
         self.template_da = f"""you are a data analyst. you extract the main key word to retrieve the data from the database. you use the data to create a simple report that represent the main key in question. you send the report to the data engineer to be create and executed the query. So your task is really important. Answer report follow REPORT FORMAT.
 
         DATA ANALYST REPORT
@@ -192,6 +198,7 @@ class PromptHandle:
         print(f'{template_de}')
         print(f"------------------END GET ANSWER------------------")
         sql_ = ""
+        sql_query = ""
         description = ""
         try:
             full_repsonse = self.chat_with_openai(template_de, st)

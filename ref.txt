@@ -1,2 +1,12 @@
 
 https://github.com/MohammadrezaPourreza/Few-shot-NL2SQL-with-prompting/blob/main/DIN-SQL_BIRD.py
+
+
+https://archive.ph/P8WQJ
+https://archive.ph/DkhD3
+
+#fine tuning:
+https://archive.ph/ChCDm
+
+#knowledged graph:
+https://archive.ph/AciBY

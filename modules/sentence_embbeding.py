@@ -29,7 +29,9 @@ class SentenceEmbedding(object):
 
 
 if __name__ == "__main__":
+   
     model = SentenceEmbedding("..\\tokenizer", "..\\embeddings.onnx")
+    # model = SentenceEmbedding("./tokenizer", 'https://huggingface.co/tanaha2002/embedding/blob/main/embeddings.onnx')
     # begin = time.time()
     b = model.embed("Bạn là gà hay thóc?")
     print(f"a: {b}")
