@@ -219,38 +219,46 @@ class PromptHandle:
     
 
     def Groupchat(self,query,st):
-        #sample raw cache
-        sample_cache = random.sample(self.raw_cache_dict, 50)
-        sample_prompt = f"""\nHere is some sample you can learn to get the insight and context of our database structure.\n ---------EXAMPLE---------\n"""
-        for item in sample_cache:
-            sample_prompt += f"Q: {item['Question']}\nA: {item['Answer']}\n"
-        sample_prompt += f"---------END EXAMPLE---------\n"
-        query = f"{query}\n{sample_prompt}"
-        report_da = self.da_report(query,st)
-        sql,result,description = self.get_answer(report_da,st)
-        max_try = 3
-        print(f"\n\n------------------RESULT------------------\n{result}\n------------------END RESULT------------------\n")
-        while 'Failed' in result and max_try > 0:
-            #rollback the curr
-            self.db.conn.rollback()
-            print(f"\nFailed {max_try} times\n")
-            #give prompt to user to edit the query
-            new_prompt = f"""\nYou generate the wrong syntax SQL query, please notice that. If the error can't be fixed or if the task is not solved even after the code is executed successfully, analyze the problem, revisit your assumption, collect additional info you need, and think of a different approach to try. Focus on YOUR PREVIOUS SQL WRONG to correct it.\n\n---------YOUR PREVIOUS SQL WRONG---------\n
-            {sql}
-            \n---------END PREVIOUS SQL WRONG---------\n
-            \n---------YOUR ERROR---------\n
-            {result}
-            \n---------END ERROR---------\n
-            \n---------USER QUESTION---------\n
-            {query}
-            \n---------END USER QUESTION---------\n
-            \n\n
-            """
-            sql,result,description = self.get_answer(new_prompt,st)
-            max_try -= 1
-        #get column name of curr
-        return sql,result,description
-    
+        #--query db
+        if query[0:4] == "\\sql":
+            query = query[4:]
+            #sample raw cache
+            sample_cache = random.sample(self.raw_cache_dict, 50)
+            sample_prompt = f"""\nHere is some sample you can learn to get the insight and context of our database structure.\n ---------EXAMPLE---------\n"""
+            for item in sample_cache:
+                sample_prompt += f"Q: {item['Question']}\nA: {item['Answer']}\n"
+            sample_prompt += f"---------END EXAMPLE---------\n"
+            query = f"{query}\n{sample_prompt}"
+            report_da = self.da_report(query,st)
+            sql,result,description = self.get_answer(report_da,st)
+            max_try = 3
+            print(f"\n\n------------------RESULT------------------\n{result}\n------------------END RESULT------------------\n")
+            while 'Failed' in result and max_try > 0:
+                #rollback the curr
+                self.db.conn.rollback()
+                print(f"\nFailed {max_try} times\n")
+                #give prompt to user to edit the query
+                new_prompt = f"""\nYou generate the wrong syntax SQL query, please notice that. If the error can't be fixed or if the task is not solved even after the code is executed successfully, analyze the problem, revisit your assumption, collect additional info you need, and think of a different approach to try. Focus on YOUR PREVIOUS SQL WRONG to correct it.\n\n---------YOUR PREVIOUS SQL WRONG---------\n
+                {sql}
+                \n---------END PREVIOUS SQL WRONG---------\n
+                \n---------YOUR ERROR---------\n
+                {result}
+                \n---------END ERROR---------\n
+                \n---------USER QUESTION---------\n
+                {query}
+                \n---------END USER QUESTION---------\n
+                \n\n
+                """
+                sql,result,description = self.get_answer(new_prompt,st)
+                max_try -= 1
+            #get column name of curr
+            return sql,result,description
+        else:
+            #if query is not sql query, then it should be normal question
+            prompt = self.normal_cap_ref(query)
+            full_response = self.chat_with_openai(prompt,st)
+            return None,full_response,None
+           
 
 
 

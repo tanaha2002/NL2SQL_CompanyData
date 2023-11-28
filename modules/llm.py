@@ -58,7 +58,6 @@ def chat_with_openai(prompt, st, model="gpt-3.5-turbo-1106", max_tokens=1250, te
     answer = ""
     full_response = ""
     retry_count = 0
-    print("ROMPTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT")
     print(prompt)
     system_message = "A Data Engineer. You follow an approved plan. Generate the initial SQL based on the requirements provided. Send it to the Sr Data Analyst to be executed."
     while retry_count <= num_retries:

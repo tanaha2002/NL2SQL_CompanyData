@@ -81,28 +81,34 @@ if init_val.status == 200:
                         
                     # response = prompt_handle.process_query(prompt, table_defines,st)
                     sql,response,description = init_val.Groupchat(prompt,st)
-                    if 'Failed' in response:
-                        st.error('Failed to attemp to API 3 times, may you need re-check your billing or API ❌')
-                        
+                    print(f"sql: {sql}")
+                    print(f"response: {response}")
+                    print(f"description: {description}")
+                    if sql == None or description == None:
+                        st.session_state.messages.append({"role": "assistant", "content":response})
                     else:
-                        st.write(sql)
-                        #add description (column name)  to response
-                        print(description)
-                        columns = [col[0] for col in description]
-                        print(response)
-                        merge_response = []
-                        for row in response:
-                            merge_response.append(dict(zip(columns, row)))
-                        st.write("Results:")
-                        st.table(merge_response)
-                        df = pd.DataFrame(merge_response)
-                        table_html = df.to_html(index=False, justify='center', classes=['dataframe'])
-                        
-                        # for idx, row in enumerate(response):
-                        #     st.write(f"{idx} - Name: {row[0]}, Value: {row[1]}")
-                        message = {"role": "assistant", "content":sql}
-                        message2 = {"role": "assistant", "result":merge_response}
-                        st.session_state.messages.append(message)
-                        st.session_state.messages.append(message2)
+                        if 'Failed' in response:
+                            st.error('Failed to attemp to API 3 times, may you need re-check your billing or API ❌')
+                            
+                        else:
+                            st.write(sql)
+                            #add description (column name)  to response
+                            print(description)
+                            columns = [col[0] for col in description]
+                            print(response)
+                            merge_response = []
+                            for row in response:
+                                merge_response.append(dict(zip(columns, row)))
+                            st.write("Results:")
+                            st.table(merge_response)
+                            df = pd.DataFrame(merge_response)
+                            table_html = df.to_html(index=False, justify='center', classes=['dataframe'])
+                            
+                            # for idx, row in enumerate(response):
+                            #     st.write(f"{idx} - Name: {row[0]}, Value: {row[1]}")
+                            message = {"role": "assistant", "content":sql}
+                            message2 = {"role": "assistant", "result":merge_response}
+                            st.session_state.messages.append(message)
+                            st.session_state.messages.append(message2)
 else:
     st.error('Failed to init api, please init first! ❌')
