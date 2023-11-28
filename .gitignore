@@ -8,3 +8,4 @@ server_key
 *.onnx
 llmma2-13b-SQL
 test_modules
+embeddings.onnx
