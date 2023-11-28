@@ -80,7 +80,7 @@ platformdirs==4.0.0
 prompt-toolkit==3.0.39
 protobuf==4.25.0
 psutil==5.9.6
-psycopg2==2.9.9
+psycopg2-binary
 pure-eval==0.2.2
 pyarrow==14.0.1
 pyautogen==0.1.14
