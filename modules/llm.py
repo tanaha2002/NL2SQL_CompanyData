@@ -85,16 +85,54 @@ def chat_with_openai(prompt, st, model="gpt-3.5-turbo-1106", max_tokens=1250, te
             for chunk in response:
                 print(answer, end="", flush=True)
                 print(f"trạng thái st: {st}")
-                if st != None:
-                    placeholder.markdown(full_response)
-                else:
-                    full_response += answer
-                    event_time = time.time() - start
-                    event_text = chunk.choices[0].delta
-                    if "content" in event_text:
-                        answer = event_text["content"]
+                
+                placeholder.markdown(full_response)
+                
+                full_response += answer
+                event_time = time.time() - start
+                event_text = chunk.choices[0].delta
+                if "content" in event_text:
+                    answer = event_text["content"]
 
             
+            
+            return full_response
+        
+        except Exception as e:
+            retry_count += 1
+            print(f"Retry attempt {retry_count} after API error: {e}")
+            time.sleep(delay_time)
+    
+    return "API error, please try again later"
+
+def chat_with_openai_nostream(prompt, model="gpt-3.5-turbo-1106", max_tokens=1250, temperature=0.0, delay_time=0.01, num_retries=3):
+    start = time.time()
+
+    retry_count = 0
+    print(prompt)
+    system_message = "A Data Engineer. You follow an approved plan. Generate the initial SQL based on the requirements provided. Send it to the Sr Data Analyst to be executed."
+    while retry_count <= num_retries:
+        try:
+            response = openai.ChatCompletion.create(
+             
+                model=model,
+                messages=[
+                    {
+                        
+                        "role": "user",
+                        "content": prompt,
+                    }
+                ],
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0,
+                max_tokens=max_tokens,
+                temperature=temperature,
+                stream=False,
+                request_timeout=5
+            )
+            
+            full_response = response.choices[0].message.content
             
             return full_response
         
