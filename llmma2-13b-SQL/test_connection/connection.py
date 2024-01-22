@@ -12,7 +12,7 @@ sys.path.append(parent_dir)
 from llama_index import SQLDatabase
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, force=True)
 logging.getLogger().addHandler(logging.StreamHandler(stream=sys.stdout))
-url = 'postgresql://postgres:admin123@18.143.92.192:5432/Odoo_sql'
+url = st.secrets['DB_URL']
 
 engine = create_engine(url)
 postgre = engine.connect()

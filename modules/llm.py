@@ -19,7 +19,7 @@ load_dotenv()
 openai.api_key = st.secrets['api_secret']
 
 #set base to our mistral server (it's required to use version 0.28.0)
-# openai.api_base = "http://171.235.90.182:1234/v1"
+# openai.api_base = "http://xx.xx.xx.xx:1234/v1"
 # openai.api_key = ""
 
 

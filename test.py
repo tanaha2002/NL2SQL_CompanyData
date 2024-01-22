@@ -9,7 +9,7 @@ table_defines = [
     'utm_medium', 'utm_source'
 ]
 
-url_onnx = "http://18.143.174.234:4001"
+url_onnx = st.secrets['url_onnx']
 
 
 def send_request():
