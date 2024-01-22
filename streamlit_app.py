@@ -7,7 +7,7 @@ from modules import prompt_prepare, llm, db, cache_processing, sentence_embbedin
 import json
 import requests
 import pandas as pd
-openai.api_key = st.secrets['api_secret_2']
+openai.api_key = st.secrets['api_secret']
 # App title
 st.set_page_config(page_title="🤯🐼 Database @$J#L!%H:")
 
