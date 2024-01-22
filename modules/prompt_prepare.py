@@ -1,8 +1,8 @@
 from dotenv import load_dotenv
 import os
 from modules_.db import PostgresDB
-from modules import llm
 import datetime
+from modules import llm
 from modules.sentence_embbeding import SentenceEmbedding
 from modules.cache_processing import CacheHandle
 import random
@@ -180,6 +180,7 @@ class PromptHandle:
         print(f'{final_prompt}')
         print(f"------------------END DA_REPORT------------------")
         da_report = llm.chat_with_openai_nostream(final_prompt)
+        #khongbietvisaokhonghoatdong
         return da_report
 
 
