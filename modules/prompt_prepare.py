@@ -179,7 +179,7 @@ class PromptHandle:
         print(f"------------------GET DA REPORT------------------")
         print(f'{final_prompt}')
         print(f"------------------END DA_REPORT------------------")
-        da_report = self.chat_with_openai(final_prompt, st)
+        da_report = self.chat_with_openai(final_prompt, st=None)
         return da_report
 
 
