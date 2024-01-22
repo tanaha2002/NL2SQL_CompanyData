@@ -84,12 +84,14 @@ def chat_with_openai(prompt, st, model="gpt-3.5-turbo-1106", max_tokens=1250, te
             placeholder = st.empty()
             for chunk in response:
                 print(answer, end="", flush=True)
-                placeholder.markdown(full_response)
-                full_response += answer
-                event_time = time.time() - start
-                event_text = chunk.choices[0].delta
-                if "content" in event_text:
-                    answer = event_text["content"]
+                if st != None:
+                    placeholder.markdown(full_response)
+                else:
+                    full_response += answer
+                    event_time = time.time() - start
+                    event_text = chunk.choices[0].delta
+                    if "content" in event_text:
+                        answer = event_text["content"]
 
             
             
